@@ -1,5 +1,6 @@
 {
     "port": 80,
     "files": "files",
-    "routes": "routes"
+    "routes": "routes",
+    "secret": "myssecret"
 }

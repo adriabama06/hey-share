@@ -1,28 +1,38 @@
 use serde_derive::{Deserialize, Serialize};
 
+use once_cell::sync::Lazy;
+
+
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Config {
     pub port: u16,
-    pub files: &'static str,
-    pub routes: &'static str
+    pub files: String,
+    pub routes: String,
+    pub secret: String
 }
 
-pub static mut CONFIG: Config = Config{
-    port: 8080,
-    files: "files",
-    routes: "routes"
-};
-
-fn string_to_static_str(s: String) -> &'static str {
-    Box::leak(s.into_boxed_str())
+impl Default for Config {
+    fn default() -> Config {
+        Config{
+            port: 8080,
+            files: "files".to_string(),
+            routes: "routes".to_string(),
+            secret: "secret".to_string()
+        }
+    }
 }
+
+pub static mut CONFIG: Lazy<Config> = Lazy::new(Config::default);
 
 pub fn load_config() {
     let config_str: String = std::fs::read_to_string("config.json").unwrap();
     
-    let config_tmp: Config = serde_json::from_str::<Config>(string_to_static_str(config_str)).unwrap(); 
+    let config_tmp: Config = serde_json::from_str::<Config>(&config_str).unwrap(); 
 
     unsafe {
-        CONFIG = config_tmp;
+        CONFIG.port = config_tmp.port;
+        CONFIG.files = config_tmp.files;
+        CONFIG.routes = config_tmp.routes;
+        CONFIG.secret = config_tmp.secret;
     }
 }
