@@ -1,5 +1,6 @@
 {
-    "port": 80,
+    "port": 8083,
+    "console_log": true,
     "files": "files",
     "routes": "routes",
     "secret": "myssecret"
